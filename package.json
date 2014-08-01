@@ -1,0 +1,19 @@
+{
+  "name": "enqueue",
+  "version": "0.0.1",
+  "description": "queue up function calls",
+  "keywords": [],
+  "author": "Matthew Mueller <mattmuelle@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MatthewMueller/enqueue.git"
+  },
+  "dependencies": {
+    "duo": "~0.5.2",
+    "duo-jade": "0.0.5"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "main": "index"
+}
