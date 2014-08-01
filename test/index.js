@@ -53,7 +53,7 @@ describe('enqueue', function() {
         assert(1 == calls.length);
       })
 
-      fn(50, 'three', function() {
+      fn(75, 'three', function() {
         assert(3 == calls.length);
         assert('two' == calls[0]);
         assert('one' == calls[1]);
@@ -79,9 +79,9 @@ describe('enqueue', function() {
         assert(50 == ms);
       });
 
-      fn(50, 'three', function(i, ms) {
+      fn(75, 'three', function(i, ms) {
         assert('three' == i);
-        assert(50 == ms);
+        assert(75 == ms);
         done();
       });
     })

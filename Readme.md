@@ -15,7 +15,7 @@ var fn = enqueue(function(ms, msg, done) {
 
 fn(100, 'one', noop);
 fn(50, 'two', noop);
-fn(25, 'three', noop);
+fn(75, 'three', noop);
 
 // execution order: "two", "one", "three"
 ```
