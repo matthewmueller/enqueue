@@ -1,6 +1,6 @@
 {
   "name": "enqueue",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "queue up function calls",
   "keywords": [],
   "author": "Matthew Mueller <mattmuelle@gmail.com>",
