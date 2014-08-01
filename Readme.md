@@ -6,6 +6,7 @@
 ## Example
 
 ```js
+var enqueue = require('enqueue');
 var fn = enqueue(function(ms, msg, done) {
   setTimeout(function() {
     console.log(msg);
@@ -13,9 +14,9 @@ var fn = enqueue(function(ms, msg, done) {
   }, ms)
 }, 2); // execute 2 at a time
 
-fn(100, 'one', noop);
-fn(50, 'two', noop);
-fn(75, 'three', noop);
+fn(100, 'one', function(){});
+fn(50, 'two', function(){});
+fn(75, 'three', function(){});
 
 // execution order: "two", "one", "three"
 ```
