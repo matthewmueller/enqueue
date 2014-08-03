@@ -32,7 +32,6 @@ describe('enqueue', function() {
           }
         });
       }
-
     })
 
     it('should support concurrency', function(done) {

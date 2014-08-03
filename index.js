@@ -19,7 +19,6 @@ module.exports = enqueue;
 
 function enqueue(fn, concurrency) {
   concurrency = concurrency || 1;
-
   var pending = 1;
   var jobs = [];
 
@@ -39,9 +38,10 @@ function enqueue(fn, concurrency) {
 
     function next() {
       if (pending > concurrency) return;
-      pending++;
       var job = jobs.shift();
-      return job && job[0].apply(job[1], job[2]);
+      if (!job) return;
+      pending++;
+      return job[0].apply(job[1], job[2]);
     }
 
     function done(fn) {
