@@ -3,6 +3,20 @@
 
   queue up async function calls without the overhead. supports concurrency.
 
+## Installation
+
+Node:
+
+```bash
+$ npm install enqueue
+```
+
+Browser (with [Duo](https://github.com/duojs/duo)):
+
+```js
+var enqueue = require('matthewmueller/enqueue');
+```
+
 ## Example
 
 ```js
