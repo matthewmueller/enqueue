@@ -8,7 +8,9 @@
     "type": "git",
     "url": "git://github.com/MatthewMueller/enqueue.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "sliced": "0.0.5"
+  },
   "devDependencies": {
     "mocha": "*"
   },

@@ -2,7 +2,8 @@
  * Module dependencies
  */
 
-var slice = [].slice;
+var sliced = require('sliced');
+var noop = function(){};
 
 /**
  * Export `enqueue`
@@ -14,40 +15,67 @@ module.exports = enqueue;
  * Initialize `enqueue`
  *
  * @param {Function} fn
- * @param {Number} concurrency
+ * @param {Object} options
  */
 
-function enqueue(fn, concurrency) {
-  concurrency = concurrency || 1;
+function enqueue(fn, options) {
+  options = options || {};
+
+  var concurrency = options.concurrency || 1;
+  var timeout = options.timeout || false;
   var pending = 1;
   var jobs = [];
 
   return function() {
-    var args = slice.call(arguments);
+    var args = sliced(arguments);
     var last = args[args.length - 1];
-    var cb = 'function' == typeof last && last;
+    var end = 'function' == typeof last && last;
+    var ctx = this;
 
-    // replace original callback with done
-    if (cb) {
-      args.pop();
-      args.push(done);
-    }
-
-    jobs.push([fn, this, args]);
+    // remove "on end" function if there is one
+    end = end ? args.pop() : noop;
+    jobs.push([ctx, args.concat(once(done))]);
     return next();
 
     function next() {
       if (pending > concurrency) return;
       var job = jobs.shift();
       if (!job) return;
+
+      var ctx = job[0];
+      var args = job[1];
+      var finish = args[args.length - 1];
+
       pending++;
-      return job[0].apply(job[1], job[2]);
+
+      // support timeouts
+      if (timeout) {
+        setTimeout(function() {
+          finish(new Error('job timed out'))
+        }, timeout);
+      }
+
+      // call the fn
+      return fn.apply(job[0], job[1]);
     }
 
-    function done(fn) {
+    function done() {
       pending--;
       next();
-      return cb.apply(this, arguments);
+      return end.apply(this, arguments);
     }
+  }
+}
+
+/**
+ * Once
+ */
+
+function once(fn) {
+  var called = false;
+  return function _once() {
+    if (called) return noop();
+    called = true;
+    return fn.apply(this, arguments);
   }
 }

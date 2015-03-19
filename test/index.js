@@ -32,6 +32,25 @@ describe('enqueue', function() {
           }
         });
       }
+    });
+
+    it('should work without callbacks', function(done) {
+      var calls = [];
+
+      var fn = enqueue(function(id, cb) {
+        calls.push(id);
+        cb();
+      });
+
+      fn(1);
+      fn(2);
+      fn(3, function () {
+        assert(1 == calls[0]);
+        assert(2 == calls[1]);
+        assert(3 == calls[2]);
+        done();
+      });
+
     })
 
     it('should support concurrency', function(done) {
@@ -42,7 +61,7 @@ describe('enqueue', function() {
           calls.push(i);
           cb();
         }, ms);
-      }, 2);
+      }, { concurrency: 2 });
 
       fn(100, 'one', function() {
         assert(2 == calls.length);
@@ -66,7 +85,7 @@ describe('enqueue', function() {
         setTimeout(function() {
           cb(i, ms);
         }, ms);
-      }, 2);
+      }, { concurrency: 2 });
 
       fn(100, 'one', function(i, ms) {
         assert('one' == i);
@@ -92,12 +111,44 @@ describe('enqueue', function() {
           assert(ctx.ctx == expected);
           cb();
         }, ms)
-      }, 2);
+      }, { concurrency: 2 });
 
       fn.call({ ctx: 'a', }, 100, 'a', function(){});
       fn.call({ ctx: 'b', }, 50, 'b', function(){});
       fn.call({ ctx: 'c', }, 100, 'c', done);
     })
+  })
+
+  it('should support a timeout', function(done) {
+    this.timeout(3000);
+    var called = 0;
+    var d = new Date();
+
+    var fn = enqueue(function(id, cb) {
+      // wait...
+    }, { concurrency: 2, timeout: 200 });
+
+    fn(1, function(err) {
+      assert(err);
+      var delta = (new Date()) - d;
+      eom(delta, 200);
+      called++;
+    });
+
+    fn(2, function(err) {
+      assert(2 == ++called);
+      assert(err);
+      var delta = (new Date()) - d;
+      eom(delta, 200);
+    });
+
+    fn(3, function(err) {
+      assert(err);
+      assert(3 == ++called);
+      var delta = (new Date()) - d;
+      eom(delta, 400);
+      done();
+    });
   })
 
   describe('sync', function() {
@@ -130,4 +181,13 @@ describe('enqueue', function() {
 function range(min, max) {
   var n = Math.random();
   return Math.round(n * max + (1 - n) * min);
+}
+
+/**
+ * Margin of error
+ */
+
+function eom(actual, expected) {
+  var percentage = Math.abs(actual/expected - 1);
+  assert(percentage < .1, percentage + '% > 10%');
 }
