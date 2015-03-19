@@ -23,7 +23,7 @@ var enqueue = require('matthewmueller/enqueue');
 var superagent = require('superagent');
 var enqueue = require('enqueue');
 
-// execute 2 at a time, with a tim
+// execute 2 at a time, with a time
 var options = {
   concurrency: 2,
   timeout: 1000
