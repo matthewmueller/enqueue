@@ -26,7 +26,8 @@ var enqueue = require('enqueue');
 // execute 2 at a time, with a timeout
 var options = {
   concurrency: 2,
-  timeout: 1000
+  timeout: 1000,
+  limit: 10
 };
 
 var fn = enqueue(function(url, done) {
@@ -49,7 +50,7 @@ Create a queue wrapper for `fn`. `options` include:
 - `concurrency` (default: `1`): specify how many jobs you'd like to run at once.
 - `timeout` (default: `false`): specify how long a job stall run before it times out.
 - `limit` (default: `Infinity`): limit how many jobs can be queued up at any given time.
-will return an `Error` if the limit has been reached.
+`queue` will return an `Error` if the limit has been reached.
 
 ### `queue(args..., [end])`
 
