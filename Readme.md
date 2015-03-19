@@ -48,6 +48,8 @@ Create a queue wrapper for `fn`. `options` include:
 
 - `concurrency` (default: `1`): specify how many jobs you'd like to run at once.
 - `timeout` (default: `false`): specify how long a job stall run before it times out.
+- `limit` (default: `Infinity`): limit how many jobs can be queued up at any given time.
+will return an `Error` if the limit has been reached.
 
 ### `queue(args..., [end])`
 

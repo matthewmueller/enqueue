@@ -1,4 +1,9 @@
 
+1.0.1 / 2015-03-19
+==================
+
+  * add option to limit the number of jobs that can be added to the queue at t any given time. { limit: n }
+
 1.0.0 / 2015-03-19
 ==================
 
