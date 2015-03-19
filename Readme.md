@@ -1,7 +1,7 @@
 
 # enqueue
 
-  queue up async function calls without the overhead. supports concurrency.
+  seamlessly queue up asynchronous function calls. supports concurrency and timeouts.
 
 ## Installation
 
@@ -42,12 +42,16 @@ fn('http://mat.io', function(err, res) { /* ... */ })
 
 ## API
 
-### enqueue(fn, [options])
+### `queue = enqueue(fn, [options])`
 
-Seamlessly queue up `fn` calls. `options` include:
+Create a queue wrapper for `fn`. `options` include:
 
 - `concurrency` (default: `1`): specify how many jobs you'd like to run at once.
 - `timeout` (default: `false`): specify how long a job stall run before it times out.
+
+### `queue(args..., [end])`
+
+Pass any number of `args...` into the queue with an optional `end` function.
 
 ## Test
 
