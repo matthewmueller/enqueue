@@ -25,7 +25,9 @@ function enqueue(fn, options) {
   var timeout = options.timeout || false;
   var limit = options.limit || Infinity;
   var pending = 1;
+  var tids = {};
   var jobs = [];
+  var id = 0;
 
   return function() {
     var args = sliced(arguments);
@@ -38,10 +40,11 @@ function enqueue(fn, options) {
     var last = args[args.length - 1];
     var end = 'function' == typeof last && last;
     var ctx = this;
+    id++;
 
     // remove "on end" function if there is one
     end = end ? args.pop() : noop;
-    jobs.push([ctx, args.concat(once(done))]);
+    jobs.push([id, ctx, args.concat(once(done(id)))]);
     return next();
 
     function next() {
@@ -49,27 +52,31 @@ function enqueue(fn, options) {
       var job = jobs.shift();
       if (!job) return;
 
-      var ctx = job[0];
-      var args = job[1];
+      var id = job[0]
+      var ctx = job[1];
+      var args = job[2];
       var finish = args[args.length - 1];
 
       pending++;
 
       // support timeouts
       if (timeout) {
-        setTimeout(function() {
+        tids[id] = setTimeout(function() {
           finish(new Error('job timed out'))
         }, timeout);
       }
 
       // call the fn
-      return fn.apply(job[0], job[1]);
+      return fn.apply(job[1], job[2]);
     }
 
-    function done() {
-      pending--;
-      next();
-      return end.apply(this, arguments);
+    function done(id) {
+      return function _done() {
+        clearTimeout(tids[id]);
+        pending--;
+        next();
+        return end.apply(this, arguments);
+      }
     }
   }
 }
