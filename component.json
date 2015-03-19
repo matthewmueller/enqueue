@@ -2,7 +2,7 @@
   "name": "enqueue",
   "repo": "matthewmueller/enqueue",
   "description": "queue up async function calls without the overhead",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "keywords": [],
   "dependencies": {},
   "development": {},
