@@ -151,6 +151,52 @@ describe('enqueue', function() {
     });
   })
 
+  it('should support limits', function(done) {
+    var called = [];
+
+    var fn = enqueue(function(id, cb) {
+      setTimeout(function() {
+        called.push(id);
+        cb();
+      }, 200);
+    }, { limit: 2 });
+
+    fn(1);
+    fn(2);
+    var err = fn(3);
+    assert(err);
+
+    setTimeout(function() {
+      fn(4, function() {
+        assert.deepEqual(called, [1, 2, 4]);
+        done();
+      })
+    }, 300);
+  });
+
+  it('should support limits with concurrency', function(done) {
+    var called = [];
+
+    var fn = enqueue(function(id, cb) {
+      setTimeout(function() {
+        called.push(id);
+        cb();
+      }, 200);
+    }, { limit: 2, concurrency: 3 });
+
+    fn(1);
+    fn(2);
+    var err = fn(3);
+    assert(err);
+
+    setTimeout(function() {
+      fn(4, function() {
+        assert.deepEqual(called, [1, 2, 4]);
+        done();
+      })
+    }, 300);
+  });
+
   describe('sync', function() {
 
     it('should work with sync functions', function() {
