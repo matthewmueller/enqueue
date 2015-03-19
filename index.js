@@ -23,10 +23,17 @@ function enqueue(fn, options) {
 
   var concurrency = options.concurrency || 1;
   var timeout = options.timeout || false;
+  var limit = options.limit || Infinity;
   var pending = 1;
   var jobs = [];
 
   return function() {
+    var args = sliced(arguments);
+
+    if (jobs.length + pending > limit) {
+      return new Error('queue limit reached, try later');
+    }
+
     var args = sliced(arguments);
     var last = args[args.length - 1];
     var end = 'function' == typeof last && last;
