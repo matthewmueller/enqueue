@@ -20,26 +20,34 @@ var enqueue = require('matthewmueller/enqueue');
 ## Example
 
 ```js
+var superagent = require('superagent');
 var enqueue = require('enqueue');
-var fn = enqueue(function(ms, msg, done) {
-  setTimeout(function() {
-    console.log(msg);
-    done();
-  }, ms)
-}, 2); // execute 2 at a time
 
-fn(100, 'one', function(){});
-fn(50, 'two', function(){});
-fn(75, 'three', function(){});
+// execute 2 at a time, with a tim
+var options = {
+  concurrency: 2,
+  timeout: 1000
+};
 
-// execution order: "two", "one", "three"
+var fn = enqueue(function(url, done) {
+  superagent.get(url, done);
+}, options);
+
+fn('http://lapwinglabs.com', function(err, res) { /* ... */ })
+fn('http://gittask.com', function(err, res) { /* ... */ })
+
+// delayed until one of the other two come back
+fn('http://mat.io', function(err, res) { /* ... */ })
 ```
 
 ## API
 
-### enqueue(fn, [concurrency])
+### enqueue(fn, [options])
 
-Queue up `fn` calls, executing `fn` concurrently depending on the value of `concurrency`. `concurrency` defaults to 1, so `fn` calls would be executed sequentially.
+Seamlessly queue up `fn` calls. `options` include:
+
+- `concurrency` (default: `1`): specify how many jobs you'd like to run at once.
+- `timeout` (default: `false`): specify how long a job stall run before it times out.
 
 ## Test
 

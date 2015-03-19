@@ -2,7 +2,7 @@
   "name": "enqueue",
   "version": "1.0.0",
   "description": "queue up function calls",
-  "keywords": [],
+  "keywords": ["queue", "simple", "tiny", "timeout", "concurrency"],
   "author": "Matthew Mueller <mattmuelle@gmail.com>",
   "repository": {
     "type": "git",
